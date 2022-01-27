@@ -32,6 +32,19 @@ jQuery(function () {
     activeNav.parents(".accordion-item").addClass("active");
   };
 
+  // Open active sidebar section in left nav
+  $(".docs-sidebar a.active, li.accordion-item.active").each(function (
+    index,
+    a
+  ) {
+    $(a)
+      .parents("li.accordion-item")
+      .each(function (index, item) {
+        $(item).addClass("active");
+        $(item).find("> input").prop("checked", true);
+      });
+  });
+
 // Function to close menus on pressing the "Escape" key
   function closeDropdownOnEscape () {
     if (event.key === 'Escape') {
@@ -48,6 +61,7 @@ jQuery(function () {
     e.stopPropagation();
 
     $('#module-list').toggleClass('open');
+    $('#version-list').removeClass('open');
 
     $(document).one('click', function closeMenu(e) {
       if ($('#module-list').has(e.target).length === 0) {
@@ -100,6 +114,7 @@ jQuery(function () {
     e.stopPropagation();
 
     $('#version-list').toggleClass('open');
+    $('#module-list').removeClass('open');
 
     $(document).one('click', function closeMenu(e) {
       if ($('#version-list').has(e.target).length === 0) {
@@ -451,6 +466,7 @@ $("a[data-filter]").on("keypress", function(e) {
 
   // navtabs
   const navtabs = $("div[data-navtab-id]");
+
   navtabs.on("click", function () {
     const navtabTitle = $(this);
     const navtabID = navtabTitle.data("navtab-id");
@@ -466,6 +482,20 @@ $("a[data-filter]").on("keypress", function(e) {
     navtabContent.siblings().css("display", "none");
     navtabContent.css("display", "block");
   });
+
+  navtabs.on("keypress", function(e) {
+    const navtabTitle = $(this);
+    const navtabID = navtabTitle.data("navtab-id");
+    const navtabContent = $(`div[data-navtab-content='${navtabID}']`);
+
+    if (e.keyCode === 13) {
+      navtabTitle.siblings().removeClass("active");
+      navtabTitle.addClass("active");
+      navtabContent.siblings().css("display", "none");
+      navtabContent.css("display", "block");
+    }
+  });
+
   // set first navtab as active
   $(".navtabs").each(function (index, navtabs) {
     $(navtabs).find("div[data-navtab-content]").css("display", "none");
@@ -622,49 +652,16 @@ $("a[data-filter]").on("keypress", function(e) {
   }
 });
 
+// Tooltips for badges
 jQuery(function () {
-  var closed = localStorage.getItem("closebanner-hackathon");
-  if (
-    closed !== "closebanner"
-  ) {
-    $(".navbar-v2").removeClass("closed");
-    $("body").addClass("banner");
-  } else {
-    $(".navbar-v2").addClass("closed");
-    $("body").removeClass("banner");
-  }
-
-  // open docs sidebar items
-  $(".docs-sidebar a.active, li.accordion-item.active").each(function (
-    index,
-    a
-  ) {
-    $(a)
-      .parents("li.accordion-item")
-      .each(function (index, item) {
-        $(item).addClass("active");
-        $(item).find("> input").prop("checked", true);
-      });
-  });
-});
-
-var scrolling = false;
-$(document).on("scroll", function () {
-  scrolling = true;
-});
-
-setInterval(function () {
-  if (scrolling) {
-    scrolling = false;
-    if ($(document).scrollTop() < 85) {
-      $(".navbar-v2").removeClass("compress");
-    } else {
-      $(".navbar-v2").addClass("compress");
-    }
-  }
-}, 10);
-
-$(".closebanner").on("click", function () {
-  $(".navbar-v2").addClass("closed");
-  localStorage.setItem("closebanner-hackathon", "closebanner");
+    $('.badge.enterprise')
+      .append( '<div class="tooltip"><span class="tooltiptext">Available with Enterprise subscription</span></div>' );
+    $('.badge.plus')
+      .append( '<div class="tooltip"><span class="tooltiptext">Available with Plus subscription (Konnect Cloud)</span></div>' );
+    $('.badge.free')
+      .append( '<div class="tooltip"><span class="tooltiptext">Available in Enterprise Free mode (without a license)</span></div>' );
+    $('.badge.oss')
+      .append( '<div class="tooltip"><span class="tooltiptext" >Available in Kong open-source only</span></div>' );
+    $('.badge.dbless')
+      .append( '<div class="tooltip"><span class="tooltiptext">Compatible with DB-less deployments</span></div>' );
 });

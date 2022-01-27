@@ -8,6 +8,17 @@ an application that lets you manage configuration for multiple runtimes
 from a single, cloud-based control plane, and provides a catalog of all deployed
 services.
 
+## January 2022
+
+### 2022.1.14
+**Custom Domain for Dev Portal**
+: You can now set a custom domain for your Dev Portal through the {{site.konnect_saas}} Admin UI.
+
+: See the documentation: [Add a Custom Domain](/konnect/dev-portal/customization/custom-domain/).
+
+**Headers are modifiable**
+: You can now set a welcome message and primary header through the Admin UI for your Dev Portal.
+
 ## November 2021
 
 ### 2021.11.30
