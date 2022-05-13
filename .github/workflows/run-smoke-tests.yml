@@ -1,5 +1,8 @@
 name: Run Smoke Tests
 on:
+  push:
+   branches:
+     - main
   pull_request:
     types: [synchronize, ready_for_review, opened]
 
@@ -49,4 +52,7 @@ jobs:
 
       - name: Run tests
         run: |
-          make rspec
+          npm install -g wait-on netlify-cli
+          netlify dev & wait-on http://localhost:8888
+          npx playwright install chromium
+          npm run test:smoke

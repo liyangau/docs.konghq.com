@@ -5,6 +5,7 @@
 #  the files in https://github.com/Kong/kong/tree/master/autodoc/cli
 #
 title: CLI Reference
+source_url: https://github.com/Kong/kong/tree/master/autodoc/cli
 ---
 
 ## Introduction
@@ -69,6 +70,10 @@ Options:
  -p,--prefix      (optional string)   Override prefix directory.
 
 ```
+
+{:.note}
+> **Note:** `db_export` is only supported with open-source
+{{site.base_gateway}} packages.
 
 ---
 

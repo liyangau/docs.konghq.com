@@ -7,6 +7,7 @@
 #
 title: Admin API
 toc: false
+source_url: https://github.com/Kong/kong/blob/master/autodoc/admin-api/data/admin-api.lua
 
 service_body: |
     Attributes | Description
@@ -210,7 +211,6 @@ plugin_body: |
     `service`<br>*optional* |  If set, the plugin will only activate when receiving requests via one of the routes belonging to the specified Service. Leave unset for the plugin to activate regardless of the Service being matched.  Default: `null`.With form-encoded, the notation is `service.id=<service id>` or `service.name=<service name>`. With JSON, use "`"service":{"id":"<service id>"}` or `"service":{"name":"<service name>"}`.
     `consumer`<br>*optional* |  If set, the plugin will activate only for requests where the specified has been authenticated. (Note that some plugins can not be restricted to consumers this way.). Leave unset for the plugin to activate regardless of the authenticated Consumer.  Default: `null`.With form-encoded, the notation is `consumer.id=<consumer id>` or `consumer.username=<consumer username>`. With JSON, use "`"consumer":{"id":"<consumer id>"}` or `"consumer":{"username":"<consumer username>"}`.
     `config`<br>*optional* |  The configuration properties for the Plugin which can be found on the plugins documentation page in the [Kong Hub](https://docs.konghq.com/hub/).
-    `run_on`<br>*optional* (Enterprise only) |  Control on which Kong nodes this plugin will run, given a Service Mesh scenario. Accepted values are: * `first`, meaning "run on the first Kong node that is encountered by the request". On an API Getaway scenario, this is the usual operation, since there is only one Kong node in between source and destination. In a sidecar-to-sidecar Service Mesh scenario, this means running the plugin only on the Kong sidecar of the outbound connection. * `second`, meaning "run on the second node that is encountered by the request". This option is only relevant for sidecar-to-sidecar Service Mesh scenarios: this means running the plugin only on the Kong sidecar of the inbound connection. * `all` means "run on all nodes", meaning both sidecars in a sidecar-to-sidecar scenario. This is useful for tracing/logging plugins.  Defaults to `"first"`.
     `protocols` |  A list of the request protocols that will trigger this plugin. The default value, as well as the possible values allowed on this field, may change depending on the plugin type. For example, plugins that only work in stream mode will only support `"tcp"` and `"tls"`.  Default: `["grpc", "grpcs", "http",`<wbr>` "https"]`.
     `enabled` | Whether the plugin is applied. Default: `true`.
     `tags`<br>*optional* |  An optional set of strings associated with the Plugin for grouping and filtering.
@@ -678,8 +678,9 @@ HTTP 200 OK
 
 ``` json
 {
-    { "services": [],
-      "routes": []
+    {
+        "services": [],
+        "routes": []
     }
 }
 ```
@@ -1320,7 +1321,7 @@ Services can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Service
 
@@ -1451,7 +1452,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update Service
 
@@ -1517,7 +1518,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update Service
 
@@ -1596,7 +1597,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete Service
 
@@ -1617,17 +1618,6 @@ Attributes | Description
 ---:| ---
 `certificate id`<br>**required** | The unique identifier of the Certificate to delete.
 `service name or id`<br>**required** | The unique identifier **or** the name of the Service to delete.
-
-
-##### Delete Service Associated to a Specific Route
-
-<div class="endpoint delete indent">/routes/{route name or id}/service</div>
-
-{:.indent}
-Attributes | Description
----:| ---
-`route name or id`<br>**required** | The unique identifier **or** the name of the Route associated to the Service to be deleted.
-
 
 #### Response
 
@@ -1710,7 +1700,7 @@ Routes can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Route
 
@@ -1831,7 +1821,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update Route
 
@@ -1887,7 +1877,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update Route
 
@@ -1956,7 +1946,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete Route
 
@@ -2007,7 +1997,7 @@ Consumers can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Consumer
 
@@ -2097,7 +2087,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update Consumer
 
@@ -2142,7 +2132,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update Consumer
 
@@ -2200,7 +2190,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete Consumer
 
@@ -2290,7 +2280,7 @@ would have otherwise matched config B.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Plugin
 
@@ -2463,7 +2453,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update Plugin
 
@@ -2531,7 +2521,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update Plugin
 
@@ -2612,7 +2602,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete Plugin
 
@@ -2739,7 +2729,7 @@ Certificates can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Certificate
 
@@ -2829,7 +2819,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update Certificate
 
@@ -2874,7 +2864,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update Certificate
 
@@ -2932,7 +2922,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete Certificate
 
@@ -2980,7 +2970,7 @@ CA Certificates can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create CA Certificate
 
@@ -3060,7 +3050,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update CA Certificate
 
@@ -3095,7 +3085,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update CA Certificate
 
@@ -3143,7 +3133,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete CA Certificate
 
@@ -3183,7 +3173,7 @@ SNIs can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create SNI
 
@@ -3294,7 +3284,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Update SNI
 
@@ -3340,7 +3330,7 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Or Update SNI
 
@@ -3399,7 +3389,7 @@ See POST and PATCH responses.
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Delete SNI
 
@@ -3455,7 +3445,7 @@ Upstreams can be both [tagged and filtered by tags](#tags).
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 ##### Create Upstream
 
@@ -3547,17 +3537,6 @@ Attributes | Description
 `certificate id`<br>**required** | The unique identifier of the Certificate to retrieve.
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to retrieve.
 
-
-##### Retrieve Upstream Associated to a Specific Target
-
-<div class="endpoint get indent">/targets/{target host:port or id}/upstream</div>
-
-{:.indent}
-Attributes | Description
----:| ---
-`target host:port or id`<br>**required** | The unique identifier **or** the host:port of the Target associated to the Upstream to be retrieved.
-
-
 #### Response
 
 ```
@@ -3568,7 +3547,6 @@ HTTP 200 OK
 {{ page.upstream_json }}
 ```
 
-
 ---
 
 ### Update Upstream
@@ -3576,9 +3554,9 @@ HTTP 200 OK
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
-##### Update Upstream
+#### Update Upstream
 
 <div class="endpoint patch indent">/upstreams/{upstream name or id}</div>
 
@@ -3588,7 +3566,7 @@ Attributes | Description
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to update.
 
 
-##### Update Upstream Associated to a Specific Certificate
+#### Update Upstream Associated to a Specific Certificate
 
 <div class="endpoint patch indent">/certificates/{certificate id}/upstreams/{upstream name or id}</div>
 
@@ -3597,17 +3575,6 @@ Attributes | Description
 ---:| ---
 `certificate id`<br>**required** | The unique identifier of the Certificate to update.
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to update.
-
-
-##### Update Upstream Associated to a Specific Target
-
-<div class="endpoint patch indent">/targets/{target host:port or id}/upstream</div>
-
-{:.indent}
-Attributes | Description
----:| ---
-`target host:port or id`<br>**required** | The unique identifier **or** the host:port of the Target associated to the Upstream to be updated.
-
 
 #### Request Body
 
@@ -3624,17 +3591,12 @@ HTTP 200 OK
 {{ page.upstream_json }}
 ```
 
-
 ---
 
 ### Update Or Create Upstream
 
-
-
 {:.note}
-> **Note**: Not available in DB-less mode.
-
-##### Create Or Update Upstream
+> **Note**: This API is not available in DB-less mode.
 
 <div class="endpoint put indent">/upstreams/{upstream name or id}</div>
 
@@ -3643,8 +3605,7 @@ Attributes | Description
 ---:| ---
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to create or update.
 
-
-##### Create Or Update Upstream Associated to a Specific Certificate
+#### Create Or Update Upstream Associated to a Specific Certificate
 
 <div class="endpoint put indent">/certificates/{certificate id}/upstreams/{upstream name or id}</div>
 
@@ -3653,17 +3614,6 @@ Attributes | Description
 ---:| ---
 `certificate id`<br>**required** | The unique identifier of the Certificate to create or update.
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to create or update.
-
-
-##### Create Or Update Upstream Associated to a Specific Target
-
-<div class="endpoint put indent">/targets/{target host:port or id}/upstream</div>
-
-{:.indent}
-Attributes | Description
----:| ---
-`target host:port or id`<br>**required** | The unique identifier **or** the host:port of the Target associated to the Upstream to be created or updated.
-
 
 #### Request Body
 
@@ -3693,17 +3643,12 @@ HTTP 201 Created or HTTP 200 OK
 
 See POST and PATCH responses.
 
-
 ---
 
 ### Delete Upstream
 
-
-
 {:.note}
-> **Note**: Not available in DB-less mode.
-
-##### Delete Upstream
+> **Note**: This API is not available in DB-less mode.
 
 <div class="endpoint delete indent">/upstreams/{upstream name or id}</div>
 
@@ -3713,7 +3658,7 @@ Attributes | Description
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to delete.
 
 
-##### Delete Upstream Associated to a Specific Certificate
+#### Delete Upstream Associated to a Specific Certificate
 
 <div class="endpoint delete indent">/certificates/{certificate id}/upstreams/{upstream name or id}</div>
 
@@ -3723,23 +3668,11 @@ Attributes | Description
 `certificate id`<br>**required** | The unique identifier of the Certificate to delete.
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the Upstream to delete.
 
-
-##### Delete Upstream Associated to a Specific Target
-
-<div class="endpoint delete indent">/targets/{target host:port or id}/upstream</div>
-
-{:.indent}
-Attributes | Description
----:| ---
-`target host:port or id`<br>**required** | The unique identifier **or** the host:port of the Target associated to the Upstream to be deleted.
-
-
 #### Response
 
 ```
 HTTP 204 No Content
 ```
-
 
 ---
 
@@ -3850,8 +3783,7 @@ A target is an ip address/hostname with a port that identifies an instance of a 
 service. Every upstream can have many targets, and the targets can be
 dynamically added, modified, or deleted. Changes take effect on the fly.
 
-Because the upstream maintains a history of target changes, the targets cannot
-be deleted or modified. To disable a target, post a new one with `weight=0`;
+To disable a target, post a new one with `weight=0`;
 alternatively, use the `DELETE` convenience method to accomplish the same.
 
 The current target object definition is the one with the latest `created_at`.
@@ -3865,19 +3797,17 @@ Targets can be both [tagged and filtered by tags](#tags).
 
 ### Add Target
 
-
-
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
-##### Create Target Associated to a Specific Upstream
+#### Create Target Associated to a Specific Upstream
 
-<div class="endpoint post indent">/upstreams/{upstream host:port or id}/targets</div>
+<div class="endpoint post indent">/upstreams/{upstream_id}/targets</div>
 
 {:.indent}
 Attributes | Description
 ---:| ---
-`upstream host:port or id`<br>**required** | The unique identifier or the `host:port` attribute of the Upstream that should be associated to the newly-created Target.
+`upstream_id`<br>**required** | The unique identifier of the Upstream that should be associated to the newly-created Target.
 
 
 #### Request Body
@@ -3901,14 +3831,14 @@ HTTP 201 Created
 ### List Targets
 {:.badge .dbless}
 
-##### List Targets Associated to a Specific Upstream
+#### List Targets Associated to a Specific Upstream
 
-<div class="endpoint get indent">/upstreams/{upstream host:port or id}/targets</div>
+<div class="endpoint get indent">/upstreams/{upstream_id}/targets</div>
 
 {:.indent}
 Attributes | Description
 ---:| ---
-`upstream host:port or id`<br>**required** | The unique identifier or the `host:port` attribute of the Upstream whose Targets are to be retrieved. When using this endpoint, only Targets associated to the specified Upstream will be listed.
+`upstream_id`<br>**required** | The unique identifier of the Upstream whose Targets are to be retrieved. When using this endpoint, only Targets associated to the specified Upstream will be listed.
 
 
 #### Response
@@ -3929,13 +3859,10 @@ HTTP 200 OK
 
 ### Update Target
 
-
-
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 Update a target.
-
 
 <div class="endpoint patch indent">/upstreams/{upstream name or id}/targets/{host:port or id}</div>
 
@@ -3945,22 +3872,18 @@ Attributes | Description
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the upstream for which to update the target.
 `host:port or id`<br>**required** | The host:port combination element of the target to update, or the `id` of an existing target entry.
 
-
 #### Response
 
 ```
 HTTP 201 Created
 ```
 
-
 ---
 
 ### Delete Target
 
-
-
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 Remove a target from the load balancer.
 
@@ -3973,13 +3896,11 @@ Attributes | Description
 `upstream name or id`<br>**required** | The unique identifier **or** the name of the upstream for which to delete the target.
 `host:port or id`<br>**required** | The host:port combination element of the target to remove, or the `id` of an existing target entry.
 
-
 #### Response
 
 ```
 HTTP 204 No Content
 ```
-
 
 ---
 
@@ -3988,7 +3909,7 @@ HTTP 204 No Content
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 Set the current health status of an individual address resolved by a target
 in the load balancer to "healthy" in the entire Kong cluster.
@@ -4027,7 +3948,7 @@ HTTP 204 No Content
 
 
 {:.note}
-> **Note**: Not available in DB-less mode.
+> **Note**: This API is not available in DB-less mode.
 
 Set the current health status of an individual address resolved by a target
 in the load balancer to "unhealthy" in the entire Kong cluster.

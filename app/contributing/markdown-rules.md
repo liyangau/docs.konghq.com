@@ -59,9 +59,14 @@ disable_image_expand: true
 
 
 ## Variables
+
 Use variables for product names and release versions. See
 [Variables](/contributing/variables) for syntax and when to use each one.
 
+## Headers
+
+Headers should not contain any code. Use plain text instead. Use title case
+for all headers, per [Content best practices](/contributing/style-guide/#content-best-practices).
 
 ## Links
 
@@ -260,7 +265,9 @@ Here's some more content.
 {% endnavtab %}
 {% endnavtabs %}
 
-You can automatically select a specific tab (or set of tabs) on a page using the `tab` URL parameter e.g. https://docs.konghq.com/gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-deck-yaml
+You can automatically select a specific tab (or set of tabs) on a page using the `tab` URL parameter.
+For example:
+https://docs.konghq.com/gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-deck-yaml
 
 The value provided to `?tab` is the lowercase title of the navtab, with all non-alphanumeric characters removed and spaces replaced with `-`.
 
@@ -272,18 +279,19 @@ Examples:
 
 If you're unsure what value to use, view the page source and search for `data-slug` to see the generated slug.
 
-If there are multiple sets of tabs to enable, you may provide multiple tab names, separated by a comma:
+If there are multiple sets of tabs to enable, you can provide multiple tab names, separated by a comma:
 
 ```
 ?tab=using-the-admin-api,using-deck-yaml
 ```
 
-This will activate the `Using the Admin API` tab, then the `Using decK (YAML)` tabs. The order may be important if you are reusing tab names across contexts. See `/gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-the-admin-api,using-deck-yaml` for an example.
+This will activate the `Using the Admin API` tab, then the `Using decK (YAML)` tabs. The order may be important if you are reusing tab names across contexts.
+See this [sample link to the getting started guide with Admin API and decK tabs selected](/gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-the-admin-api,using-deck-yaml).
 
-When using `?tab=` it *must* be before any URL fragments (`#`) in the URL:
+When using `?tab=`, it *must* come before any URL fragments (`#`) in the URL:
 
-* ✅ /gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-deck-yaml#validate-rate-limiting
-* ❌ /gateway/2.7.x/get-started/comprehensive/protect-services/#validate-rate-limiting/?tab=using-deck-yaml
+* <i class="fa fa-check"></i> Good URL: /gateway/2.7.x/get-started/comprehensive/protect-services/?tab=using-deck-yaml#validate-rate-limiting
+* <i class="fa fa-times"></i> Bad URL: /gateway/2.7.x/get-started/comprehensive/protect-services/#validate-rate-limiting/?tab=using-deck-yaml
 
 ### Tabs for codeblocks
 
@@ -328,6 +336,40 @@ $ httpie some request
 ```
 {% endnavtab %}
 {% endnavtabs %}
+
+### Tabs for OSS/Enterprise
+
+> Important: `navtabs_ee` currently only works for Gateway documentation
+
+When using `navtabs` to render content for both Open Source and Enterprise versions
+of a product, you should use the `navtabs_ee` block instead of `navtabs`. This hides
+the inline tab selection and adds a "Switch to Enterprise/OSS" option on the right hand
+side of the page.
+
+`navtabs_ee` expects the tabs to be called `Kong Gateway` and `Kong Gateway (OSS)`, and
+that the enterprise tab will always be shown first.
+
+Here's an example of how to use them:
+
+````
+{% raw %}
+{% navtabs_ee codeblock %}
+{% navtab Kong Gateway %}
+```bash
+This will be shown when Enterprise is selected
+```
+{% endnavtab %}
+{% navtab Kong Gateway (OSS) %}
+```bash
+This will be shown when OSS is selected
+ ```
+{% endnavtab %}
+{% endnavtabs_ee %}
+{% endraw %}
+````
+
+The Enterprise tab is shown by default. Add `?install=oss` to your URL if you'd like
+to link to the OSS install instructions for on a page.
 
 ### Indenting tabs in an ordered list
 
@@ -556,3 +598,71 @@ For example:
 ```
 {% endnavtab %}
 {% endnavtabs %}
+
+## Icons
+
+You can add the following classes to any Font Awesome or custom icon:
+
+* `inline`: The icon appears inline with text.
+* `no-image-expand`: The icon won't open in a modal on click.
+
+If you're using the [`konnect_icon`](#konnect-icon) shortcut, both classes are
+already applied to the icons and you don't need to add them manually.
+
+### Unicode icons
+
+We use unicode icons for common icons such as ✅ &nbsp; and ❌ &nbsp;. To make sure the
+spacing is correct, insert `&nbsp;` after the icon:
+
+```md
+✅ &nbsp; and ❌ &nbsp;
+```
+
+If you don't add it, the icon will look like ❌ this.
+
+### Font Awesome
+
+To use a Font Awesome icon, use an `<i>` HTML tag with the name of the icon
+set as its class.
+
+For example, the following code snippet:
+
+```
+<i class="fas fa-anchor"></i>
+```
+
+Resolves to <i class="fas fa-anchor"></i>.
+
+
+### Custom icons
+
+Custom icons for the Kong docs site are located in the
+[`/_assets/images/icons/`](https://github.com/Kong/docs.konghq.com/tree/main/app/_assets/images/icons)
+directory. To add an icon, ensure it meets the following criteria:
+* SVG format
+* The same icon doesn't already exist in the folder, in unicode, or in the
+Font Awesome library.
+
+For most custom icons ([except Konnect](#konnect-icons)), access them like
+you would any image in markdown. For example:
+
+```
+![document icon](/assets/images/icons/icn-doc.svg){:.inline .no-image-expand}
+```
+
+This resolves to ![document icon](/assets/images/icons/icn-doc.svg){:.inline .no-image-expand}.
+
+### Konnect icons
+
+Konnect icons can be found in `app/_assets/images/icons/konnect`.
+When adding an icon to this folder, use the naming convention `icn-<name>`.
+
+You can then access a Konnect icon with a shortcut for easy use in text:
+
+```
+{% raw %}{% konnect_icon runtimes %}{% endraw %}
+# Uses the icon located at /app/_assets/images/icons/konnect/icn-runtimes.svg
+
+{% raw %}{% konnect_icon dev-portal %}{% endraw %}
+# Uses the icon located at /app/_assets/images/icons/konnect/icn-dev-portal.svg
+```

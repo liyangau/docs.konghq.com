@@ -80,6 +80,8 @@ exclude:
 
 # location vars
 icons_dir: assets/images/icons
+include:
+  - _headers
 
 plugins:
   - jekyll-redirect-from
@@ -142,6 +144,12 @@ defaults:
     values:
       layout: "docs-v2"
       version-index: 1
+
+  - scope:
+      path: "gateway/2.8.x/"
+    values:
+      layout: "docs-v2"
+      version-index: 2
 
   - scope:
       path: "about"

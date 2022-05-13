@@ -16,9 +16,9 @@ Tested on Windows 10 and Windows Server 2019.
 {:.note}
 > **Note**: Transparent proxying is not supported on Windows.
 
-## 1. Download Kuma
+## 1. Download Kong Mesh
 
-To run Kuma on Windows you can choose among different installation methods:
+To run Kong Mesh on Windows you can choose among different installation methods:
 
 {% navtabs %}
 {% navtab Powershell Script %}
@@ -26,7 +26,7 @@ To run Kuma on Windows you can choose among different installation methods:
 Run the following script in Powershell to automatically detect the operating system and download {{site.mesh_product_name}}:
 
 ```powershell
-Invoke-Expression (Invoke-WebRequest -Uri https://docs.konghq.com/mesh/installer.ps1).Content
+Invoke-Expression ([System.Text.Encoding]::UTF8.GetString((Invoke-WebRequest -Uri https://docs.konghq.com/mesh/installer.ps1).Content))
 ```
 
 {% endnavtab %}
@@ -43,7 +43,7 @@ tar xvzf kong-mesh-{{page.kong_latest.version}}-windows-amd64.tar.gz
 {% endnavtab %}
 {% endnavtabs %}
 
-## 2. Run Kuma
+## 2. Run Kong Mesh
 
 Once downloaded, you will find the contents of {{site.mesh_product_name}} in the `kong-mesh-{{include.kong_latest.version}}` folder. In this folder, you will find &mdash; among other files &mdash; the bin directory that stores all the executables for {{site.mesh_product_name}}.
 
@@ -56,11 +56,11 @@ cd kong-mesh-{{include.kong_latest.version}}/bin
 Then, run the control plane with:
 
 ```sh
-$ KUMA_LICENSE_PATH=/path/to/file/license.json kuma-cp run
+$ KMESH_LICENSE_PATH=/path/to/file/license.json kuma-cp run
 ```
 
 This example will run {{site.mesh_product_name}} in standalone mode for a _flat_
-deployment, but there are more advanced [deployment modes](https://kuma.io/docs/latest/documentation/deployments/)
+deployment, but there are more advanced [deployment modes](https://kuma.io/docs/latest/introduction/deployments/)
 like _multi-zone_.
 
 We suggest adding the `kumactl` executable to your `PATH` so that it's always available in every working directory (Powershell as Administrator):
@@ -69,7 +69,7 @@ We suggest adding the `kumactl` executable to your `PATH` so that it's always av
 New-Item -ItemType SymbolicLink -Path C:\Windows\kumactl.exe -Target .\kumactl.exe
 ```
 
-This runs {{site.mesh_product_name}} with a [memory backend](https://kuma.io/docs/latest/documentation/backends/), 
+This runs {{site.mesh_product_name}} with a [memory backend](https://kuma.io/docs/latest/explore/backends/), 
 but you can use a persistent storage like PostgreSQL by updating the `conf/kuma-cp.conf` file.
 
 {% include /md/mesh/install-universal-verify.md %}

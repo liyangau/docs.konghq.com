@@ -5,6 +5,7 @@
 #  the files in https://github.com/Kong/docs.konghq.com/tree/main/autodoc-conf-ee
 #
 title: Configuration Reference for Kong Gateway
+source_url: https://github.com/Kong/kong-ee/blob/master/kong.conf.default
 ---
 
 ## Configuration loading
@@ -624,7 +625,7 @@ Valid values to this setting are:
 - `pki`: use `cluster_ca_cert`, `cluster_server_name` and `cluster_cert` for
   verification. These are different certificates for each DP node, but issued by
   a cluster-wide common CA certificate: `cluster_ca_cert`.
-- `pki_check_cn`: similar to `pki`, but additionally
+- `pki_check_cn` <span class="badge enterprise"></span>: similar to `pki`, but additionally
    checks for the Common Name of the data plane certificate specified in
    `cluster_allowed_common_names`.
 
@@ -678,7 +679,7 @@ This field is ignored if `cluster_mtls` is set to `shared`.
 
 #### cluster_allowed_common_names
 
-The list of Common Names that are allowed to connect to the control plane. 
+The list of Common Names that are allowed to connect to the control plane.
 Multiple entries may be supplied in a comma-separated string. When not
 set, only Data Planes with the same parent domain as the
 Control Plane cert are allowed to connect.
@@ -1621,11 +1622,6 @@ When using a database, Kong will store data for all its entities (such as
 Routes, Services, Consumers, and Plugins) in a database, and
 all Kong nodes belonging to the same cluster must connect themselves to the same
 database.
-
-Kong supports the following database versions:
-
-- **PostgreSQL**: 9.5 and above.
-- **Cassandra**: 2.2 and above.
 
 When not using a database, Kong is said to be in "DB-less mode": it will keep
 its entities in memory, and each node needs to have this data entered via a

@@ -22,6 +22,7 @@ jQuery(function () {
       },
       700
     );
+    history.pushState({}, '', $(this).attr("href"));
   });
 
   // Active link
@@ -416,19 +417,30 @@ $("a[data-filter]").on("keypress", function(e) {
     if ($window.width() <= 1099) {
       mobileTable();
     }
+
+    if ($window.width() > 1099) {
+      $("table").each(function (index, value) {
+        $(this).removeClass("mobile");
+      });
+    }
   }));
 
   function mobileTable() {
     $("table").each(function (index, value) {
+      $(this).addClass("mobile");
       var headerCount = $(this).find("thead th").length;
 
       for (i = 0; i <= headerCount; i++) {
-        var headerLabel = $(this)
-          .find("thead th:nth-child(" + i + ")")
-          .text();
+
+        var headerLabel = $(this).find("thead th:nth-child(" + i + ") .mobile-label").text();
+        if (!headerLabel){
+          headerLabel = $(this)
+            .find("thead th:nth-child(" + i + ")")
+            .text();
+        }
 
         $(this)
-          .find("tr td:not([colspan]):nth-child(" + i + ")")
+          .find("tr td:not([colspan],.no-mobile,.header-row):nth-child(" + i + ")")
           .replaceWith(function () {
             return $('<td data-label="' + headerLabel + '">').append(
               $(this).contents()
@@ -477,7 +489,7 @@ $("a[data-filter]").on("keypress", function(e) {
     }
   });
 
-  function activateNavTab(navtabTitle) {
+  function activateNavTab(navtabTitle, skipScroll) {
     // Toggle all nav tabs that match this title
     const text = navtabTitle.text();
     const search = $(".navtab-title").filter(function () {
@@ -491,11 +503,13 @@ $("a[data-filter]").on("keypress", function(e) {
     const screenTop = $(window).scrollTop();
     const screenBottom = $(window).scrollTop() + $(window).innerHeight();
 
-    // If the element isn't on screen, scroll to it
-    if (elementBottom < screenTop || elementTop > screenBottom){
-        $([document.documentElement, document.body]).animate({
-          scrollTop: elementTop - 120
-      }, 0);
+    if (!skipScroll){
+      // If the element isn't on screen, scroll to it
+      if (elementBottom < screenTop || elementTop > screenBottom){
+          $([document.documentElement, document.body]).animate({
+            scrollTop: elementTop - 120
+        }, 0);
+      }
     }
   }
 
@@ -540,6 +554,34 @@ $("a[data-filter]").on("keypress", function(e) {
         activateNavTab(navTab);
       }
     }
+  }
+
+  // Handle EE/OSS Sidebar switcher
+  const ossEeToggle = $("#oss-ee-toggle");
+  if ($(".external-trigger").length){
+    ossEeToggle.show();
+  }
+
+  ossEeToggle.on("click", function(){
+    const t = $(this);
+    const current = t.data('current');
+    let next;
+    let slug;
+    if (current == "Enterprise" || !current){
+      next = "OSS";
+      slug = "kong-gateway-oss";
+    } else {
+      next = "Enterprise";
+      slug = "kong-gateway";
+    }
+    t.data('current', next);
+    t.find("#switch-to-version").text(current);
+
+    activateNavTab($(".navtab-title[data-slug='"+slug+"']").first(), true)
+  });
+
+  if (getParams.install == "oss" && ossEeToggle.is(":visible")) {
+    ossEeToggle.click();
   }
 
 
@@ -631,60 +673,6 @@ $("a[data-filter]").on("keypress", function(e) {
     }
   });
 
-  /**
-   * Edition based element visibility
-   *
-   * Usage in markdown files:
-   * Wrap any of the [content] within {% edition [edition] %}[content]{% endedition %} to see the content
-   * only when edition=[edition] query parameter is specified.
-   *
-   * Example:
-   * {% edition gateway-oss %}
-   * ### {{site.ce_product_name}}
-   * {{site.ce_product_name}} is an open-source, lightweight API gateway optimized for microservices, delivering unparalleled...
-   * {% endedition %}
-   *
-   * Usage in docs_nav_.yml files:
-   * Use edition: [edition] property for specific item which should be visible
-   * only when edition=[edition] query parameter is specified.
-   *
-   * Example:
-   * - title: Getting Started Guide
-   *   icon: /assets/images/icons/documentation/icn-quickstart-color.svg
-   *   items:
-   *     - text: Overview
-   *       url: /overview
-   *     - text: Prepare to Administer
-   *       url: /prepare
-   *       edition: enterprise
-   *     - text: Expose your Services
-   *       url: /expose-services
-   *       edition: gateway-oss
-   */
-  const edition = decodeURIComponent(window.location.search)
-    .substring(1)
-    .split("&")
-    .map((queryParam) => queryParam.split("="))
-    .filter((params) => params[0] === "edition")
-    .map((params) => params[1])[0];
-
-  const editionSwitch = $(".edition-switch");
-  editionSwitch.on("click", function () {
-    if (edition === "gateway-oss") {
-      window.location.search = "?edition=enterprise";
-    } else {
-      window.location.search = "?edition=gateway-oss";
-    }
-  });
-
-  if (edition) {
-    $("*[data-edition]")
-      .not(`[data-edition="${edition}"]`)
-      .each(function (index, element) {
-        element.style.display = "none";
-      });
-    editionSwitch.addClass(edition);
-  }
 });
 
 // Tooltips for badges

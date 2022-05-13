@@ -148,7 +148,7 @@ Certificate:
             X509v3 Key Usage: critical
                 Digital Signature, Key Encipherment, Key Agreement
             X509v3 Extended Key Usage:
-                TLS Web Client Authentication
+                TLS Web Server Authentication
             X509v3 Subject Key Identifier:
                 70:C7:F0:3B:CD:EB:8D:1B:FF:6A:7C:E0:A4:F0:C6:4C:4A:19:B8:7F
             X509v3 Authority Key Identifier:
@@ -253,7 +253,7 @@ keys.
     ```
     By setting the role of the node to `control_plane`, this node will listen on
     port `0.0.0.0:8005` by default for Data Plane connections, and on port
-    `0.0.0.0:8006` for Vitals telemetry data. These ports on the
+    `0.0.0.0:8006` for telemetry data. These ports on the
     Control Plane will need to be accessible by all Data Planes it controls through
     any firewalls you may have in place.
 
@@ -299,7 +299,7 @@ keys.
 
     By setting the role of the node to `control_plane`, this node will listen on
     port `0.0.0.0:8005` by default for Data Plane connections, and on port
-    `0.0.0.0:8006` for Vitals telemetry data. These ports on the
+    `0.0.0.0:8006` for telemetry data. These ports on the
     Control Plane will need to be accessible by all Data Planes it controls through
     any firewalls you may have in place.
 
@@ -390,37 +390,86 @@ follow the instructions to:
 1. Bring up your Data Plane container with the following settings:
 
     For `shared` certificate mode, use:
-    ```bash
-    docker run -d --name kong-ee-dp1 --network=kong-ee-net \
-    -e "KONG_ROLE=data_plane" \
-    -e "KONG_DATABASE=off" \
-    -e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
-    -e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
-    -e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
-    -e "KONG_CLUSTER_CERT=/<path-to-file>/cluster.crt" \
-    -e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/cluster.key" \
-    --mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
-    -p 8000:8000 \
-    kong-ee-dp1
-    ```
+
+{% capture shared-mode-cp %}
+{% navtabs codeblock %}
+{% navtab Kong Gateway %}
+```bash
+docker run -d --name kong-dp --network=kong-net \
+-e "KONG_ROLE=data_plane" \
+-e "KONG_DATABASE=off" \
+-e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
+-e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
+-e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
+-e "KONG_CLUSTER_CERT=/<path-to-file>/cluster.crt" \
+-e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/cluster.key" \
+--mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
+-p 8000:8000 \
+kong/kong-gateway:{{page.kong_versions[page.version-index].ee-version}}-alpine
+```
+{% endnavtab %}
+{% navtab Kong Gateway (OSS) %}
+```bash
+docker run -d --name kong-dp --network=kong-net \
+-e "KONG_ROLE=data_plane" \
+-e "KONG_DATABASE=off" \
+-e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
+-e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
+-e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
+-e "KONG_CLUSTER_CERT=/<path-to-file>/cluster.crt" \
+-e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/cluster.key" \
+--mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
+-p 8000:8000 \
+kong:{{page.kong_versions[page.version-index].ce-version}}-alpine
+```
+{% endnavtab %}
+{% endnavtabs %}
+{% endcapture %}
+{{ shared-mode-cp | indent | replace: " </code>", "</code>" }}
 
     For `pki` certificate mode, use:
-    ```bash
-    docker run -d --name kong-ee-dp1 --network=kong-ee-net \
-    -e "KONG_ROLE=data_plane" \
-    -e "KONG_DATABASE=off" \
-    -e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
-    -e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
-    -e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
-    -e "KONG_CLUSTER_MTLS=pki" \
-    -e "KONG_CLUSTER_SERVER_NAME=control-plane.kong.yourcorp.tld" \
-    -e "KONG_CLUSTER_CERT=data-plane.crt" \
-    -e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/data-plane.crt" \
-    -e "KONG_CLUSTER_CA_CERT=/<path-to-file>/ca-cert.pem" \
-    --mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
-    -p 8000:8000 \
-    kong-ee-dp1
-    ```
+
+{% capture pki-mode-cp %}
+{% navtabs codeblock %}
+{% navtab Kong Gateway %}
+```bash
+docker run -d --name kong-dp --network=kong-net \
+-e "KONG_ROLE=data_plane" \
+-e "KONG_DATABASE=off" \
+-e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
+-e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
+-e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
+-e "KONG_CLUSTER_MTLS=pki" \
+-e "KONG_CLUSTER_SERVER_NAME=control-plane.kong.yourcorp.tld" \
+-e "KONG_CLUSTER_CERT=data-plane.crt" \
+-e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/data-plane.crt" \
+-e "KONG_CLUSTER_CA_CERT=/<path-to-file>/ca-cert.pem" \
+--mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
+-p 8000:8000 \
+kong/kong-gateway:{{page.kong_versions[page.version-index].ee-version}}-alpine
+```
+{% endnavtab %}
+{% navtab Kong Gateway (OSS) %}
+```bash
+docker run -d --name kong-dp --network=kong-net \
+-e "KONG_ROLE=data_plane" \
+-e "KONG_DATABASE=off" \
+-e "KONG_PROXY_LISTEN=0.0.0.0:8000" \
+-e "KONG_CLUSTER_CONTROL_PLANE=control-plane.<admin-hostname>.com:8005" \
+-e "KONG_CLUSTER_TELEMETRY_ENDPOINT=control-plane.<admin-hostname>.com:8006" \
+-e "KONG_CLUSTER_MTLS=pki" \
+-e "KONG_CLUSTER_SERVER_NAME=control-plane.kong.yourcorp.tld" \
+-e "KONG_CLUSTER_CERT=data-plane.crt" \
+-e "KONG_CLUSTER_CERT_KEY=/<path-to-file>/data-plane.crt" \
+-e "KONG_CLUSTER_CA_CERT=/<path-to-file>/ca-cert.pem" \
+--mount type=bind,source="$(pwd)"/cluster,target=<path-to-keys-and-certs>,readonly \
+-p 8000:8000 \
+kong:{{page.kong_versions[page.version-index].ce-version}}-alpine
+```
+{% endnavtab %}
+{% endnavtabs %}
+{% endcapture %}
+{{ pki-mode-cp | indent | replace: " </code>", "</code>" }}
 
     Where:
 
@@ -443,13 +492,13 @@ follow the instructions to:
     TLS. When not set, Data Plane will use `kong_clustering` as the SNI.
 
     : You can also optionally use `KONG_CLUSTER_TELEMETRY_SERVER_NAME`
-      to set a custom SNI for Vitals telemetry data. If not set, it defaults to
+      to set a custom SNI for telemetry data. If not set, it defaults to
       `KONG_CLUSTER_SERVER_NAME`.
 
     `KONG_CLUSTER_TELEMETRY_ENDPOINT`
-    : Optional setting, needed for Vitals telemetry gathering. Not available in open-source deployments.
+    : Optional setting, needed for telemetry gathering. Not available in open-source deployments.
 
-2. If needed, bring up any subsequent Data Planes using the same settings.
+1. If needed, bring up any subsequent Data Planes using the same settings.
 
 {% endnavtab %}
 {% navtab Using kong.conf %}
@@ -511,11 +560,11 @@ and follow the instructions in Steps 1 and 2 **only** to download
     not set, Data Plane will use `kong_clustering` as the SNI.
 
     : You can also optionally use `cluster_telemetry_server_name`
-      to set a custom SNI for Vitals telemetry data. If not set, it defaults to
+      to set a custom SNI for telemetry data. If not set, it defaults to
       `cluster_server_name`.
 
     `cluster_telemetry_endpoint`
-    : Optional setting, needed for Vitals telemetry gathering. Not available in open-source deployments.
+    : Optional setting, needed for telemetry gathering. Not available in open-source deployments.
 
 3. Restart Kong for the settings to take effect:
     ```bash
@@ -600,8 +649,8 @@ Parameter | Description | CP or DP {:width=10%:}
 [`role`](/gateway/{{page.kong_version}}/reference/configuration/#role) <br>*Required* | Determines whether the {{site.base_gateway}} instance is a Control Plane or a Data Plane. Valid values are `control_plane` or `data_plane`. | Both
 [`cluster_listen`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_listen) <br>*Optional* <br><br>**Default:** `0.0.0.0:8005`| List of addresses and ports on which the Control Plane will listen for incoming Data Plane connections. This port is always protected with Mutual TLS (mTLS) encryption. Ignored on Data Plane nodes. | CP
 [`proxy_listen`](/gateway/{{page.kong_version}}/reference/configuration/#proxy_listen) <br>*Required* | Comma-separated list of addresses and ports on which the proxy server should listen for HTTP/HTTPS traffic. Ignored on Control Plane nodes. | DP
-[`cluster_telemetry_listen`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_listen) <span class="badge enterprise"/> <br>*Optional* <br><br>**Default:** `0.0.0.0:8006`| List of addresses and ports on which the Control Plane will listen for Data Plane Vitals telemetry data. This port is always protected with Mutual TLS (mTLS) encryption. Ignored on Data Plane nodes. | CP
-[`cluster_telemetry_endpoint`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_endpoint) <span class="badge enterprise"/> <br>*Required for Enterprise deployments* | The port that the Data Plane uses to send Vitals telemetry data to the Control Plane. Ignored on Control Plane nodes. | DP
+[`cluster_telemetry_listen`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_listen) <span class="badge enterprise"/> <br>*Optional* <br><br>**Default:** `0.0.0.0:8006`| List of addresses and ports on which the Control Plane will listen for Data Plane telemetry data. This port is always protected with Mutual TLS (mTLS) encryption. Ignored on Data Plane nodes. | CP
+[`cluster_telemetry_endpoint`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_endpoint) <span class="badge enterprise"/> <br>*Required for Enterprise deployments* | The port that the Data Plane uses to send telemetry data to the Control Plane. Ignored on Control Plane nodes. | DP
 [`cluster_control_plane`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_control_plane) <br>*Required* | Address and port that the Data Plane nodes use to connect to the Control Plane. Must point to the port configured using the [`cluster_listen`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_listen) property on the Control Plane node. Ignored on Control Plane nodes. | DP
 [`cluster_mtls`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_mtls) <br>*Optional* <br><br>**Default:** `"shared"` | One of `"shared"` or `"pki"`. Indicates whether Hybrid Mode will use a shared certificate/key pair for CP/DP mTLS or if PKI mode will be used. See below sections for differences in mTLS modes. | Both
 
@@ -612,7 +661,7 @@ Parameter | Description | Shared Mode {:width=12%:} | PKI Mode {:width=30%:}
 [`cluster_cert`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_cert) and [`cluster_cert_key`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_cert_key) <br>*Required* | Certificate/key pair used for mTLS between CP/DP nodes. | Same between CP/DP nodes. | Unique certificate for each node, generated from the CA specified by `cluster_ca_cert`.
 [`cluster_ca_cert`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_ca_cert) <br>*Required in PKI mode* | The trusted CA certificate file in PEM format used to verify the `cluster_cert`. | *Ignored* | CA certificate used to verify `cluster_cert`, same between CP/DP nodes. *Required*
 [`cluster_server_name`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_server_name) <br>*Required in PKI mode* | The SNI presented by the DP node mTLS handshake. | *Ignored* | In PKI mode, the DP nodes will also verify that the Common Name (CN) or Subject Alternative Name (SAN) inside the certificate presented by CP matches the `cluster_server_name` value.
-[`cluster_telemetry_server_name`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_server_name) <span class="badge enterprise"/>|  The Vitals telemetry SNI presented by the DP node mTLS handshake. If not specified, falls back on SNI set in `cluster_server_name`. | *Ignored* | In PKI mode, the DP nodes will also verify that the Common Name (CN) or Subject Alternative Name (SAN) inside the certificate presented by CP matches the `cluster_telemetry_server_name` value.
+[`cluster_telemetry_server_name`](/gateway/{{page.kong_version}}/reference/configuration/#cluster_telemetry_server_name) <span class="badge enterprise"/>|  The telemetry SNI presented by the DP node mTLS handshake. If not specified, falls back on SNI set in `cluster_server_name`. | *Ignored* | In PKI mode, the DP nodes will also verify that the Common Name (CN) or Subject Alternative Name (SAN) inside the certificate presented by CP matches the `cluster_telemetry_server_name` value.
 
 ## Next steps
 

@@ -229,6 +229,7 @@
 /gateway/2.7.x/developer-portal/files-api/                 /gateway/2.7.x/developer-portal/portal-api/
 
 # GATEWAY REFERENCES
+/vaults/                               /gateway/latest/vaults
 /admin-api/                            /gateway/latest/admin-api
 /admin-api/*                           /gateway/latest/admin-api/:splat
 /2.6.x/admin-api/                      /gateway/latest/admin-api
@@ -464,11 +465,15 @@
 /enterprise/2.6.x/vitals/overview     /gateway/2.6.x/vitals/
 /enterprise/2.7.x/vitals/overview     /gateway/2.7.x/vitals/
 /enterprise/latest/vitals/overview    /gateway/latest/vitals/
+/gateway/latest/admin-api/vitals     /gateway/latest/vitals/
+/gateway/latest/admin-api/vitals/*   /gateway/latest/vitals/
 
 
 # KONG MESH
 /mesh/1.0.x/features/   /mesh/1.0.x/features/vault
 /mesh/1.1.x/features/   /mesh/1.1.x/features/vault
+/mesh/1.7.x/features/windows/ /mesh/1.7.x/installation/windows/
+/mesh/latest/features/windows/ /mesh/latest/installation/windows/
 
 
 # ABOUT
@@ -606,6 +611,7 @@
 /gateway-oss/2.6.x/db-encryption/      /gateway/2.6.x/plan-and-deploy/security/db-encryption
 /gateway-oss/2.7.x/db-encryption/      /gateway/2.7.x/plan-and-deploy/security/db-encryption
 /gateway-oss/latest/db-encryption/     /gateway/latest/plan-and-deploy/security/db-encryption
+/gateway-oss/latest/secrets-management/     /gateway/latest/plan-and-deploy/security/secrets-management/getting-started
 /enterprise/2.6.x/start-kong-securely/    /gateway/2.6.x/plan-and-deploy/security/start-kong-securely
 /enterprise/2.7.x/start-kong-securely/    /gateway/2.7.x/plan-and-deploy/security/start-kong-securely
 /enterprise/latest/start-kong-securely/   /gateway/latest/plan-and-deploy/security/start-kong-securely
